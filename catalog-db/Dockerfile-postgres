@@ -1,0 +1,6 @@
+FROM postgres
+
+# create the database initial schema
+ADD initial_dump.sql /docker-entrypoint-initdb.d
+
+CMD ["postgres"]
