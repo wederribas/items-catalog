@@ -1,0 +1,49 @@
+version: "3.0"
+services:
+  webapp:
+    hostname: webapp
+    container_name: catalog_webapp
+    build:
+      context: ../catalog-app
+      dockerfile: Dockerfile-nodejs
+    links:
+      - flaskapi
+    depends_on:
+      - flaskapi
+    volumes:
+      - "../catalog-app:/usr/src/catalog-app"
+    ports:
+      - 80:80
+      - 8080:8080
+      - 443:443
+    environment:
+      - NODE_ENV=development
+      - PORT=8080
+    tty: true
+  flaskapi:
+    hostname: flaskapi
+    container_name: catalog_api
+    build:
+      context: ../catalog-api
+      dockerfile: Dockerfile-python
+    links:
+      - postgresdb
+    depends_on:
+      - postgresdb
+    volumes:
+      - "../catalog-api:/usr/src/catalog-api"
+    ports:
+      - 8000:8000
+    tty: true
+  postgresdb:
+    hostname: postgresdb
+    container_name: catalog_db
+    build:
+      context: ../catalog-db
+      dockerfile: Dockerfile-postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    tty: true
