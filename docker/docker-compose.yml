@@ -13,9 +13,7 @@ services:
     volumes:
       - "../catalog-app:/usr/src/catalog-app"
     ports:
-      - 80:80
-      - 8080:8080
-      - 443:443
+      - "8080:8080"
     environment:
       - NODE_ENV=development
       - PORT=8080
@@ -33,7 +31,8 @@ services:
     volumes:
       - "../catalog-api:/usr/src/catalog-api"
     ports:
-      - 8000:8000
+      - "8000:8000"
+    command: sh -c "./wait-for.sh postgresdb:5432 -- python3 api.py"
     tty: true
   postgresdb:
     hostname: postgresdb
@@ -42,8 +41,10 @@ services:
       context: ../catalog-db
       dockerfile: Dockerfile-postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
     tty: true
