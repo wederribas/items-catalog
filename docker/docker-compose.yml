@@ -12,6 +12,7 @@ services:
       - flaskapi
     volumes:
       - "../catalog-app:/usr/src/catalog-app"
+      - /usr/src/catalog-app
     ports:
       - "8080:8080"
     environment:
