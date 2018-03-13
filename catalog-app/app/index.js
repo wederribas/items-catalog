@@ -1,8 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
+import getRoutes from 'config/routes';
 
-ReactDOM.render(
-  <h1>{"Hello World!"}</h1>,
-  document.getElementById('app')
-);
+ReactDOM.render(getRoutes(), document.getElementById('root'));
