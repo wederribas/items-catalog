@@ -1,0 +1,17 @@
+:root {
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  background: #bdc3c7;
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+}
+
+.innerContainer {
+  max-width: 900px;
+  margin: 0px auto;
+}
