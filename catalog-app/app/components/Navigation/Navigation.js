@@ -8,6 +8,9 @@ import {
   navLink,
   navBar,
   navWrapper,
+  dropdown,
+  dropdownContent,
+  dropdownImage,
 } from './styles.css';
 
 Navigation.propTypes = {
@@ -22,21 +25,38 @@ function HomeLink() {
   );
 }
 
-function AuthButton({ isAuthed }) {
+function AuthButton({ isAuthed, onAuth }) {
   return (
-    <button className={googleAuthButton}>
+    <button className={googleAuthButton} onClick={onAuth}>
       <span className={authIcon} />
       <span className={buttonText}>Google</span>
     </button>
   );
 }
 
-export default function Navigation({ isAuthed }) {
+function LoggedUserMenu({ userInfo }) {
+  return (
+    <div className={dropdown}>
+      <img className={dropdownImage} src={userInfo.photoURL} />
+      <div className={dropdownContent}>
+        <Link className={navLink} to="/logout">
+          {'Logout'}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export default function Navigation({ isAuthed, onAuth, userInfo }) {
   return (
     <header className={navBar}>
       <div className={navWrapper}>
         <HomeLink />
-        <AuthButton isAuthed={isAuthed} />
+        {isAuthed ? (
+          <LoggedUserMenu userInfo={userInfo} />
+        ) : (
+          <AuthButton isAuthed={isAuthed} onAuth={onAuth} />
+        )}
       </div>
     </header>
   );
