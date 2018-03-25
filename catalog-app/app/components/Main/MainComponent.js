@@ -11,15 +11,21 @@ class MainContainer extends Component {
     isAuthed: false,
     user: null,
   }
-  handleAuth() {
+  handleAuth = () => {
     return auth().then(({user, credential}) => {
-      console.log('User', user)
-      console.log('Credential', credential)
       this.setState({
         isAuthed: true,
         user: user,
       })
     })
+  }
+  handleLogout = event => {
+    event.preventDefault()
+    this.setState({
+      isAuthed: false,
+      user: null,
+    })
+    return logout()
   }
   componentDidMount() {
     firebaseAuth.onAuthStateChanged(user => {
@@ -38,6 +44,7 @@ class MainContainer extends Component {
           isAuthed={this.state.isAuthed}
           onAuth={this.handleAuth}
           userInfo={this.state.user}
+          onLogout={this.handleLogout}
         />
         <div className={innerContainer}>{this.props.children}</div>
       </div>

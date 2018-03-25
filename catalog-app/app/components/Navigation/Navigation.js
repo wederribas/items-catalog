@@ -34,26 +34,26 @@ function AuthButton({isAuthed, onAuth}) {
   )
 }
 
-function LoggedUserMenu({userInfo}) {
+function LoggedUserMenu({userInfo, onLogout}) {
   return (
     <div className={dropdown}>
       <img className={dropdownImage} src={userInfo.photoURL} />
       <div className={dropdownContent}>
-        <Link className={navLink} to="/logout">
+        <a href="#" className={navLink} onClick={e => onLogout(e)}>
           {'Logout'}
-        </Link>
+        </a>
       </div>
     </div>
   )
 }
 
-export default function Navigation({isAuthed, onAuth, userInfo}) {
+export default function Navigation({isAuthed, onAuth, userInfo, onLogout}) {
   return (
     <header className={navBar}>
       <div className={navWrapper}>
         <HomeLink />
         {isAuthed ? (
-          <LoggedUserMenu userInfo={userInfo} />
+          <LoggedUserMenu userInfo={userInfo} onLogout={onLogout} />
         ) : (
           <AuthButton isAuthed={isAuthed} onAuth={onAuth} />
         )}
