@@ -1,28 +1,28 @@
-import path from 'path';
-import webpack from 'webpack';
-import HTMLWebpackPlugin from 'html-webpack-plugin';
+import path from 'path'
+import webpack from 'webpack'
+import HTMLWebpackPlugin from 'html-webpack-plugin'
 
 const PATHS = {
   app: path.join(__dirname, 'app'),
   build: path.join(__dirname, 'dist'),
-};
+}
 
 const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
   template: PATHS.app + '/index.html',
   filename: 'index.html',
   inject: 'body',
-});
+})
 
-const LAUNCH_COMMAND = process.env.npm_lifecycle_event;
+const LAUNCH_COMMAND = process.env.npm_lifecycle_event
 
-const isProduction = LAUNCH_COMMAND === 'production';
-process.env.BABEL_ENV = LAUNCH_COMMAND;
+const isProduction = LAUNCH_COMMAND === 'production'
+process.env.BABEL_ENV = LAUNCH_COMMAND
 
 const productionPlugin = new webpack.DefinePlugin({
   'process.env': {
     NODE_ENV: JSON.stringify('production'),
   },
-});
+})
 
 const baseConfig = {
   entry: ['babel-polyfill', PATHS.app],
@@ -32,7 +32,7 @@ const baseConfig = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
+      {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
       {
         test: /\.css$/,
         loader:
@@ -61,7 +61,7 @@ const baseConfig = {
       reduxConfig: path.resolve('./app/reduxConfig'),
     },
   },
-};
+}
 
 const developmentConfig = {
   devtool: 'cheap-module-inline-source-map',
@@ -77,15 +77,15 @@ const developmentConfig = {
   watchOptions: {
     poll: 1000,
   },
-};
+}
 
 const productionConfig = {
   devtool: 'cheap-module-inline-source-map',
   plugins: [HTMLWebpackPluginConfig, productionPlugin],
-};
+}
 
 export default Object.assign(
   {},
   baseConfig,
-  isProduction === true ? productionConfig : developmentConfig
-);
+  isProduction === true ? productionConfig : developmentConfig,
+)

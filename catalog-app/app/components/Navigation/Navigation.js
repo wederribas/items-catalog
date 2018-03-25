@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import PropTypes from 'prop-types'
+import {Link} from 'react-router-dom'
 import {
   googleAuthButton,
   buttonText,
@@ -11,30 +11,30 @@ import {
   dropdown,
   dropdownContent,
   dropdownImage,
-} from './styles.css';
+} from './styles.css'
 
 Navigation.propTypes = {
   isAuthed: PropTypes.bool.isRequired,
-};
+}
 
 function HomeLink() {
   return (
     <Link className={navLink} to="/">
       {'Catalog App'}
     </Link>
-  );
+  )
 }
 
-function AuthButton({ isAuthed, onAuth }) {
+function AuthButton({isAuthed, onAuth}) {
   return (
     <button className={googleAuthButton} onClick={onAuth}>
       <span className={authIcon} />
       <span className={buttonText}>Google</span>
     </button>
-  );
+  )
 }
 
-function LoggedUserMenu({ userInfo }) {
+function LoggedUserMenu({userInfo}) {
   return (
     <div className={dropdown}>
       <img className={dropdownImage} src={userInfo.photoURL} />
@@ -44,10 +44,10 @@ function LoggedUserMenu({ userInfo }) {
         </Link>
       </div>
     </div>
-  );
+  )
 }
 
-export default function Navigation({ isAuthed, onAuth, userInfo }) {
+export default function Navigation({isAuthed, onAuth, userInfo}) {
   return (
     <header className={navBar}>
       <div className={navWrapper}>
@@ -59,5 +59,5 @@ export default function Navigation({ isAuthed, onAuth, userInfo }) {
         )}
       </div>
     </header>
-  );
+  )
 }

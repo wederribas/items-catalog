@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase'
 
 const config = {
   apiKey: 'AIzaSyDjVVHgh077_msL3pIQU3K_gI70yaz17iA',
@@ -7,9 +7,9 @@ const config = {
   projectId: 'udacity-items-catalog',
   storageBucket: 'udacity-items-catalog.appspot.com',
   messagingSenderId: '707782877400',
-};
+}
 
-firebase.initializeApp(config);
+firebase.initializeApp(config)
 
-export const provider = new firebase.auth.GoogleAuthProvider();
-export const firebaseAuth = firebase.auth();
+export const provider = new firebase.auth.GoogleAuthProvider()
+export const firebaseAuth = firebase.auth()

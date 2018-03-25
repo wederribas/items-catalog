@@ -9,22 +9,14 @@
     "deploy": "npm run build"
   },
   "babel": {
-    "presets": [
-      "react"
-    ],
-    "plugins": [
-      "transform-class-properties"
-    ]
+    "presets": ["react"],
+    "plugins": ["transform-class-properties"]
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wederribas/catalog-app.git"
   },
-  "keywords": [
-    "reacjs",
-    "redux",
-    "javascript"
-  ],
+  "keywords": ["reacjs", "redux", "javascript"],
   "author": "Weder Ribas @wederribas",
   "license": "MIT",
   "bugs": {

@@ -52,7 +52,7 @@
 }
 
 .authIcon {
-  background: url("./assets/g-normal.png") transparent 5px 50% no-repeat;
+  background: url('./assets/g-normal.png') transparent 5px 50% no-repeat;
   background-size: 25px;
   display: inline-block;
   vertical-align: middle;
