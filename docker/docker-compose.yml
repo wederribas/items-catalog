@@ -6,18 +6,18 @@ services:
     build:
       context: ../catalog-app
       dockerfile: Dockerfile-nodejs
-    links:
-      - flaskapi
     depends_on:
+      - flaskapi
+    links:
       - flaskapi
     volumes:
       - "../catalog-app:/usr/src/catalog-app"
-      - /usr/src/catalog-app
+      - "/usr/src/catalog-app/node_modules"
     ports:
       - "8080:8080"
     environment:
-      - NODE_ENV=development
-      - PORT=8080
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${NODE_PORT}
     tty: true
   flaskapi:
     hostname: flaskapi
@@ -25,14 +25,14 @@ services:
     build:
       context: ../catalog-api
       dockerfile: Dockerfile-python
-    links:
-      - postgresdb
     depends_on:
+      - postgresdb
+    links:
       - postgresdb
     volumes:
       - "../catalog-api:/usr/src/catalog-api"
     ports:
-      - 8000:8000
+      - "8000:8000"
     command: sh -c "./wait-for.sh postgresdb:5432 -- python3 api.py"
     tty: true
   postgresdb:

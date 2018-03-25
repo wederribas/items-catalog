@@ -1,15 +1,16 @@
 FROM node:latest
 
+# create work directory
 RUN mkdir /usr/src/catalog-app
 WORKDIR /usr/src/catalog-app
 
-ADD package.json /usr/src/catalog-app/package.json
-RUN npm install --silent
-RUN npm install react-scripts@1.0.15 -g --silent
-
-# Copy project files
-ADD . /usr/src/catalog-app
-
+# add node modules to global path
 ENV PATH /usr/src/catalog-app/node_modules/.bin:$PATH
 
+# install project dependencies
+ADD package.json /usr/src/catalog-app/package.json
+RUN npm install
+RUN npm install react-scripts@1.0.15 -g
+
+# start app
 CMD ["npm", "run", "start"]
