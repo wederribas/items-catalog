@@ -1,6 +1,7 @@
 from os import getenv
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS, cross_origin
 from database_setup import db, User, Category, Item
 
 
@@ -21,12 +22,15 @@ for key, value in db_conf.items():
         print(err)
 
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{}:{}@{}:{}/{}'.format(
     db_conf['USER'], db_conf['PASSWORD'],
     db_conf['HOST'], db_conf['PORT'], db_conf['DB'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 db.create_all(app=app)
+
+CORS(app)
 
 
 @app.route('/catalog.json')
@@ -111,7 +115,7 @@ def delete_category(category_id):
 
 @app.route('/items', methods=['GET'])
 def list_all_items():
-    items= Item.query.all()
+    items = Item.query.all()
     return jsonify(Items=[i.serialize for i in items])
 
 
@@ -185,17 +189,27 @@ def delete_item(item_id):
 
 @app.route('/users', methods=['POST'])
 def add_user():
-    new_user = User(
-        uid=request.form['uid'].strip(),
-        name=request.form['name'].strip(),
-        avatar=request.form['avatar'].strip()
-    )
-    db.session.add(new_user)
-    db.session.commit()
+    request_json = request.get_json()
+
+    user = User.query.filter_by(email=request_json.get('email')).first()
+
+    if user is None:
+        new_user = User(
+            email=request_json.get('email'),
+            uid=request_json.get('uid'),
+            avatar=request_json.get('avatar')
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({
+            'status': 'success',
+            'message': 'User has been successfully added'
+        })
 
     return jsonify({
         'status': 'success',
-        'message': 'User has been successfully added'
+        'message': 'User already exists. Do nothing'
     })
 
 

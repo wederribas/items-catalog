@@ -4,7 +4,7 @@ import {Navigation} from 'components'
 import {withRouter} from 'react-router-dom'
 import {container, innerContainer} from './styles.css'
 import {firebaseAuth} from 'config/constants'
-import auth, {logout} from 'helpers/auth'
+import auth, {logout, registerUser} from 'helpers/auth'
 
 class MainContainer extends Component {
   state = {
@@ -13,6 +13,7 @@ class MainContainer extends Component {
   }
   handleAuth = () => {
     return auth().then(({user, credential}) => {
+      registerUser(user)
       this.setState({
         isAuthed: true,
         user: user,
