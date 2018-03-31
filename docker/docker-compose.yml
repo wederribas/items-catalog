@@ -4,15 +4,15 @@ services:
     hostname: webapp
     container_name: catalog_webapp
     build:
-      context: ../catalog-app
+      context: ../catalog_app
       dockerfile: Dockerfile-nodejs
     depends_on:
       - flaskapi
     links:
       - flaskapi
     volumes:
-      - "../catalog-app:/usr/src/catalog-app"
-      - "/usr/src/catalog-app/node_modules"
+      - "../catalog_app:/usr/src/catalog_app"
+      - "/usr/src/catalog_app/node_modules"
     ports:
       - "8080:8080"
     environment:
@@ -23,14 +23,14 @@ services:
     hostname: flaskapi
     container_name: catalog_api
     build:
-      context: ../catalog-api
+      context: ../catalog_api
       dockerfile: Dockerfile-python
     depends_on:
       - postgresdb
     links:
       - postgresdb
     volumes:
-      - "../catalog-api:/usr/src/catalog-api"
+      - "../catalog_api:/usr/src/catalog_api"
     ports:
       - "8000:8000"
     command: sh -c "./wait-for.sh postgresdb:5432 -- python3 api.py"
@@ -39,7 +39,7 @@ services:
     hostname: postgresdb
     container_name: catalog_db
     build:
-      context: ../catalog-db
+      context: ../catalog_db
       dockerfile: Dockerfile-postgres
     ports:
       - "5432:5432"
