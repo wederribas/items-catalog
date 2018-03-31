@@ -13,10 +13,12 @@ class MainContainer extends Component {
   }
   handleAuth = () => {
     return auth().then(({user, credential}) => {
-      registerUser(user)
-      this.setState({
-        isAuthed: true,
-        user: user,
+      registerUser(user).then(response => {
+        window.localStorage.setItem('authToken', response.auth_token)
+        this.setState({
+          isAuthed: true,
+          user: user,
+        })
       })
     })
   }
