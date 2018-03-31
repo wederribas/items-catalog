@@ -1,36 +1,11 @@
-from os import getenv
-from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS, cross_origin
-from database_setup import db, User, Category, Item
+# catalop-api/api.py
+
+from flask import make_response, jsonify, request
+from __init__ import app, db
+from database_setup import User, Category, Item
 
 
-db_conf = {
-    'USER': getenv('POSTGRES_USER'),
-    'PASSWORD': getenv('POSTGRES_PASSWORD'),
-    'HOST': getenv('POSTGRES_HOST'),
-    'PORT': getenv('POSTGRES_PORT'),
-    'DB': getenv('POSTGRES_DB')
-}
-
-for key, value in db_conf.items():
-    try:
-        if value is None:
-            raise ValueError(
-                'Invalid database configuration. {} is missing'.format(key))
-    except ValueError as err:
-        print(err)
-
-app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{}:{}@{}:{}/{}'.format(
-    db_conf['USER'], db_conf['PASSWORD'],
-    db_conf['HOST'], db_conf['PORT'], db_conf['DB'])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)
 db.create_all(app=app)
-
-CORS(app)
 
 
 @app.route('/catalog.json')
@@ -47,13 +22,15 @@ def list_catalog():
         items_dict = [i.serialize for i in items]
         if items_dict:
             categories_dict[category]['Items'] = items_dict
-    return jsonify(Category=categories_dict)
+    return make_response(jsonify(Category=categories_dict)), 201
 
 
 @app.route('/categories', methods=['GET'])
 def list_all_categories():
     categories = Category.query.all()
-    return jsonify(Categories=[c.serialize for c in categories])
+    return make_response(
+        jsonify(Categories=[c.serialize for c in categories])
+    ), 200
 
 
 @app.route('/categories', methods=['POST'])
@@ -62,10 +39,10 @@ def add_category():
     db.session.add(new_category)
     db.session.commit()
 
-    return jsonify({
+    return make_response(jsonify({
         'status': 'success',
         'message': 'Category has been successfully added'
-    })
+    })), 201
 
 
 @app.route('/categories/<int:category_id>', methods=['PUT'])
@@ -73,22 +50,19 @@ def edit_category(category_id):
     category = Category.query.filter_by(id=category_id).first()
 
     if category is None:
-        response = jsonify({
+        return make_response(jsonify({
             'status': 'error',
             'message': 'Category not found'
-        })
-        response.status_code = 204
-
-        return response
+        })), 204
 
     if request.form.get('name'):
         category.name = request.form['name'].strip()
     db.session.commit()
 
-    return jsonify({
+    return make_response(jsonify({
         'status': 'success',
         'message': 'Category has been successfully updated'
-    })
+    })), 200
 
 
 @app.route('/categories/<int:category_id>', methods=['DELETE'])
@@ -96,27 +70,24 @@ def delete_category(category_id):
     category = Category.query.filter_by(id=category_id).first()
 
     if category is None:
-        response = jsonify({
+        return make_reponse(jsonify({
             'status': 'error',
             'message': 'Category not found'
-        })
-        response.status_code = 204
-
-        return response
+        })), 204
 
     db.session.delete(category)
     db.session.commit()
 
-    return jsonify({
+    return make_response(jsonify({
         'status': 'success',
         'message': 'Category has been successfully deleted'
-    })
+    })), 200
 
 
 @app.route('/items', methods=['GET'])
 def list_all_items():
     items = Item.query.all()
-    return jsonify(Items=[i.serialize for i in items])
+    return make_response(jsonify(Items=[i.serialize for i in items])), 200
 
 
 @app.route('/items', methods=['POST'])
@@ -130,10 +101,10 @@ def add_item():
     db.session.add(new_item)
     db.session.commit()
 
-    return jsonify({
+    return make_response(jsonify({
         'status': 'success',
         'message': 'Item has been successfully added'
-    })
+    })), 201
 
 
 @app.route('/items/<int:item_id>', methods=['PUT'])
@@ -141,13 +112,10 @@ def edit_item(item_id):
     item = Item.query.filter_by(id=item_id).first()
 
     if item is None:
-        response = jsonify({
+        return make_response(jsonify({
             'status': 'error',
             'message': 'Item not found'
-        })
-        response.status_code = 204
-
-        return response
+        })), 204
 
     if request.form.get('name'):
         item.name = request.form['name'].strip()
@@ -159,10 +127,10 @@ def edit_item(item_id):
         item.category_id = request.form['category_id'].strip()
     db.session.commit()
 
-    return jsonify({
+    return make_response(jsonify({
         'status': 'success',
         'message': 'Item has benn successfully updated'
-    })
+    })), 200
 
 
 @app.route('/items/<int:item_id>', methods=['DELETE'])
@@ -170,25 +138,22 @@ def delete_item(item_id):
     item = Item.query.filter_by(id=item_id).first()
 
     if item is None:
-        response = jsonify({
+        return make_response(jsonify({
             'status': 'error',
             'message': 'Item not found'
-        })
-        response.status_code = 204
-
-        return response
+        })), 204
 
     db.session.delete(item)
     db.session.commit()
 
-    return jsonify({
+    return make_response(jsonify({
         'status': 'success',
         'message': 'Item has been successfully deleted'
-    })
+    })), 200
 
 
 @app.route('/users', methods=['POST'])
-def add_user():
+def register_user():
     request_json = request.get_json()
 
     user = User.query.filter_by(email=request_json.get('email')).first()
@@ -201,16 +166,16 @@ def add_user():
         )
         db.session.add(new_user)
         db.session.commit()
+        auth_token = new_user.encode_auth_token(
+            new_user.id)
+    else:
+        auth_token = user.encode_auth_token(user.id)
 
-        return jsonify({
-            'status': 'success',
-            'message': 'User has been successfully added'
-        })
-
-    return jsonify({
+    return make_response(jsonify({
         'status': 'success',
-        'message': 'User already exists. Do nothing'
-    })
+        'message': 'User has been successfully registered',
+        'auth_token': auth_token.decode()
+    })), 201
 
 
 if __name__ == '__main__':

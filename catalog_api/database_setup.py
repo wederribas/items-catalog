@@ -1,8 +1,9 @@
+# catalog-api/database_setup.py
+
 import datetime
-from flask_sqlalchemy import SQLAlchemy
 
-
-db = SQLAlchemy()
+import jwt
+from __init__ import app, db
 
 
 class User(db.Model):
@@ -21,6 +22,32 @@ class User(db.Model):
             'uid': self.uid,
             'avatar': self.avatar
         }
+
+    def encode_auth_token(self, user_id):
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow()
+                + datetime.timedelta(days=0, minutes=5),
+                'iat': datetime.datetime.utcnow(),
+                'sub': user_id
+            }
+            return jwt.encode(
+                payload,
+                app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+        try:
+            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Token expired. Please, try again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please, try again.'
 
 
 class Category(db.Model):
