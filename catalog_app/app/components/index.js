@@ -1,2 +1,6 @@
 export MainComponent from './Main/MainComponent'
 export Navigation from './Navigation/Navigation'
+export CategoryList from './CategoryList/CategoryList'
+export Title from './Title/Title'
+export Divider from './Divider/Divider'
+export ItemsList from './ItemsList/ItemsList'

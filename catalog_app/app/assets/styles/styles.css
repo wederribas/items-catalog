@@ -1,0 +1,19 @@
+.listContainer {
+  display: block;
+  margin-left: 20px;
+  float: left;
+  height: inherit;
+}
+
+.listWrapper {
+  max-height: 85%;
+  overflow: auto;
+}
+
+.list {
+  color: #ff5200;
+  list-style-type: none;
+  line-height: 180%;
+  padding: 0;
+  margin-top: 0;
+}
