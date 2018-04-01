@@ -72,7 +72,7 @@ class Item(db.Model):
     description = db.Column(db.String(1000), nullable=False)
     image_url = db.Column(db.Text, nullable=False)
     creation_timestamp = db.Column(
-        db.DateTime, default=datetime.datetime.utcnow)
+        db.DateTime, default=datetime.datetime.utcnow())
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'),
                             nullable=False)
     category = db.relationship('Category',

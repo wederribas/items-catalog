@@ -1,6 +1,7 @@
 # catalop-api/api.py
 
 from flask import make_response, jsonify, request
+from sqlalchemy import desc
 from __init__ import app, db
 from database_setup import User, Category, Item
 
@@ -33,6 +34,19 @@ def list_all_categories():
     ), 200
 
 
+@app.route('/categories/<int:category_id>', methods=['GET'])
+def list_category(category_id):
+    category = Category.query.filter_by(id=category_id).first()
+
+    if category is None:
+        return make_response(jsonify({
+            'status': 'error',
+            'message': 'Category not found'
+        })), 404
+
+    return make_response(jsonify(category.serialize)), 200
+
+
 @app.route('/categories', methods=['POST'])
 def add_category():
     new_category = Category(name=request.form['name'].strip())
@@ -53,7 +67,7 @@ def edit_category(category_id):
         return make_response(jsonify({
             'status': 'error',
             'message': 'Category not found'
-        })), 204
+        })), 404
 
     if request.form.get('name'):
         category.name = request.form['name'].strip()
@@ -73,7 +87,7 @@ def delete_category(category_id):
         return make_reponse(jsonify({
             'status': 'error',
             'message': 'Category not found'
-        })), 204
+        })), 404
 
     db.session.delete(category)
     db.session.commit()
@@ -86,8 +100,36 @@ def delete_category(category_id):
 
 @app.route('/items', methods=['GET'])
 def list_all_items():
-    items = Item.query.all()
-    return make_response(jsonify(Items=[i.serialize for i in items])), 200
+    items_limit = request.args.get('limit')
+
+    if items_limit:
+        items = Item.query.order_by(desc(Item.id)).limit(items_limit).all()
+    else:
+        items = Item.query.all()
+
+    items_dict = [i.serialize for i in items]
+    for item in range(len(items_dict)):
+        categories = (
+            Category.query
+            .filter_by(id=items_dict[item]['category_id'])
+            .first()
+        )
+        items_dict[item]['category_name'] = categories.name
+
+    return make_response(jsonify(Items=items_dict)), 200
+
+
+@app.route('/items/<int:item_id>', methods=['GET'])
+def list_item(item_id):
+    item = Item.query.filter_by(id=item_id).first()
+
+    if item is None:
+        return make_response(jsonify({
+            'status': 'error',
+            'message': 'Item not found'
+        })), 404
+
+    return make_response(jsonify(item.serialize)), 200
 
 
 @app.route('/items', methods=['POST'])
@@ -115,7 +157,7 @@ def edit_item(item_id):
         return make_response(jsonify({
             'status': 'error',
             'message': 'Item not found'
-        })), 204
+        })), 404
 
     if request.form.get('name'):
         item.name = request.form['name'].strip()
@@ -141,7 +183,7 @@ def delete_item(item_id):
         return make_response(jsonify({
             'status': 'error',
             'message': 'Item not found'
-        })), 204
+        })), 404
 
     db.session.delete(item)
     db.session.commit()
