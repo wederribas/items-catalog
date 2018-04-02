@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {Link} from 'react-router-dom'
 import {Title} from 'components'
 import {fetchLatestItems} from 'helpers/api'
 import {list, listContainer} from '../../assets/styles/styles.css'
@@ -31,8 +32,10 @@ class ItemsList extends Component {
           <ul className={list}>
             {this.state.items.map(obj => (
               <li key={obj.id}>
-                {obj.name}
-                <ItemCategory name={obj.category_name} />
+                <Link to={'/items/' + obj.id}>
+                  {obj.name}
+                  <ItemCategory name={obj.category_name} />
+                </Link>
               </li>
             ))}
           </ul>
