@@ -29,6 +29,7 @@ const baseConfig = {
   output: {
     path: PATHS.build,
     filename: 'index_bunle.js',
+    publicPath: '/',
   },
   module: {
     loaders: [
