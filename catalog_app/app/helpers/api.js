@@ -22,3 +22,13 @@ export function fetchLatestItems() {
     referrer: 'no-referer',
   }).then(resp => resp.json())
 }
+
+export function fetchItem(id) {
+  const url = apiUrl + `items/${id}`
+  return fetch(url, {
+    method: 'GET',
+    mode: 'cors',
+    redirect: 'follow',
+    referrer: 'no-referer',
+  }).then(resp => resp.json())
+}
