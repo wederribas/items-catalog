@@ -6,6 +6,7 @@
 }
 
 .listWrapper {
+  min-height: 380px;
   max-height: 85%;
   overflow: auto;
 }
