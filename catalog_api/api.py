@@ -98,6 +98,31 @@ def delete_category(category_id):
     })), 200
 
 
+@app.route('/categories/<int:category_id>/items', methods=['GET'])
+def list_category_items(category_id):
+    category = Category.query.filter_by(id=category_id).first()
+
+    if category is None:
+        return make_response(jsonify({
+            'status': 'error',
+            'message': 'Category not found'
+        })), 404
+
+    items = (
+        Item.query
+        .filter_by(category_id=category.id)
+        .order_by(Item.name)
+        .all()
+    )
+
+    return make_response(
+        jsonify(
+            Items=[i.serialize for i in items],
+            Category={'category_name': category.name}
+        )
+    ), 200
+
+
 @app.route('/items', methods=['GET'])
 def list_all_items():
     items_limit = request.args.get('limit')

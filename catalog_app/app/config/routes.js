@@ -1,6 +1,6 @@
 import React from 'react'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
-import {MainComponent, Home, Item} from 'components'
+import {MainComponent, Home, Item, CategoryItems} from 'components'
 
 export default function getRoutes() {
   return (
@@ -9,6 +9,7 @@ export default function getRoutes() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/items/:id(\d+)" component={Item} />
+          <Route exact path="/categories/:id(\d+)" component={CategoryItems} />
         </Switch>
       </MainComponent>
     </Router>

@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 import {Title} from 'components'
-import {fetchLatestItems} from 'helpers/api'
+import {fetchLatestItems, fetchCategoryItems} from 'helpers/api'
 import {list, listContainer} from '../../assets/styles/styles.css'
 import {categoryLabel} from './styles.css'
 
@@ -16,25 +17,44 @@ function ItemCategory({name}) {
 class ItemsList extends Component {
   state = {
     items: null,
+    title: 'Latest Items',
+  }
+  static propTypes = {
+    displayCategory: PropTypes.bool.isRequired,
+    categoryId: PropTypes.number,
+  }
+  static defaultProps = {
+    displayCategory: true,
   }
   componentDidMount() {
-    fetchLatestItems().then(resp => {
-      this.setState({
-        items: resp.Items,
+    if (this.props.categoryId) {
+      fetchCategoryItems(this.props.categoryId).then(resp => {
+        this.setState({
+          items: resp.Items,
+          title: resp.Category.category_name + ' Items',
+        })
       })
-    })
+    } else {
+      fetchLatestItems().then(resp => {
+        this.setState({
+          items: resp.Items,
+        })
+      })
+    }
   }
   render() {
     return (
       <div className={listContainer}>
-        <Title text={'Latest Items'} />
+        <Title text={this.state.title} />
         {this.state.items ? (
           <ul className={list}>
             {this.state.items.map(obj => (
               <li key={obj.id}>
                 <Link to={'/items/' + obj.id}>
                   {obj.name}
-                  <ItemCategory name={obj.category_name} />
+                  {this.props.displayCategory ? (
+                    <ItemCategory name={obj.category_name} />
+                  ) : null}
                 </Link>
               </li>
             ))}

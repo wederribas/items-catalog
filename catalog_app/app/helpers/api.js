@@ -32,3 +32,13 @@ export function fetchItem(id) {
     referrer: 'no-referer',
   }).then(resp => resp.json())
 }
+
+export function fetchCategoryItems(category_id) {
+  const url = apiUrl + `categories/${category_id}/items`
+  return fetch(url, {
+    method: 'GET',
+    mode: 'cors',
+    redirect: 'follow',
+    referrer: 'no-referer',
+  }).then(resp => resp.json())
+}
