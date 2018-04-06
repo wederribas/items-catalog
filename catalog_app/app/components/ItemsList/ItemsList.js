@@ -26,14 +26,22 @@ class ItemsList extends Component {
   static defaultProps = {
     displayCategory: true,
   }
+  handleItemsFetching = (categoryId, called) => {
+    console.log('Who called', called)
+    return fetchCategoryItems(categoryId).then(resp => {
+      console.log('Function', resp)
+      this.setState({
+        items: resp.Items,
+        title: resp.Category.category_name + ' Items',
+      })
+    })
+  }
+  componentDidUpdate() {
+    this.handleItemsFetching(this.props.categoryId, 'didUpdate')
+  }
   componentDidMount() {
     if (this.props.categoryId) {
-      fetchCategoryItems(this.props.categoryId).then(resp => {
-        this.setState({
-          items: resp.Items,
-          title: resp.Category.category_name + ' Items',
-        })
-      })
+      this.handleItemsFetching(this.props.categoryId, 'didMount')
     } else {
       fetchLatestItems().then(resp => {
         this.setState({
@@ -41,6 +49,15 @@ class ItemsList extends Component {
         })
       })
     }
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('Should update categoryID', this.props.categoryId)
+    console.log('Should update next', nextProps.categoryId)
+    if (this.props.categoryId !== nextProps.categoryId) {
+      return true
+    }
+
+    return false
   }
   render() {
     return (

@@ -4,7 +4,6 @@ import {CategoryList, Divider, ItemsList} from 'components'
 class CategoryItems extends Component {
   render() {
     const categoryId = parseInt(this.props.match.params.id, 10)
-    console.log(categoryId)
     return (
       <div>
         <CategoryList />
