@@ -1,17 +1,20 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {CategoryList, Divider, ItemsList} from 'components'
 
-class CategoryItems extends Component {
-  render() {
-    const categoryId = parseInt(this.props.match.params.id, 10)
-    return (
-      <div>
-        <CategoryList />
-        <Divider />
-        <ItemsList displayCategory={false} categoryId={categoryId} />
-      </div>
-    )
-  }
-}
+export default function CategoryItems(props) {
+  // Get category ID from route params
+  const categoryId = parseInt(props.match.params.id, 10) || undefined
 
-export default CategoryItems
+  const shouldDisplayCategory = categoryId === undefined
+
+  return (
+    <div>
+      <CategoryList />
+      <Divider />
+      <ItemsList
+        displayCategory={shouldDisplayCategory}
+        categoryId={categoryId}
+      />
+    </div>
+  )
+}

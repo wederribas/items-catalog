@@ -6,6 +6,9 @@ import {fetchLatestItems, fetchCategoryItems} from 'helpers/api'
 import {list, listContainer} from '../../assets/styles/styles.css'
 import {categoryLabel} from './styles.css'
 
+/*
+ * Renders the item category name
+ */
 function ItemCategory({name}) {
   return (
     <span className={categoryLabel}>
@@ -14,34 +17,47 @@ function ItemCategory({name}) {
   )
 }
 
+/*
+ * Renders the list of items for a given category, or if category is null
+ * then renders the latest inseted in the database, for all categories.
+ * In the last scenario (latest items), the limit of items to be rendered
+ * is set into the API call (see helpers/api.js - fetchLatestItems()).
+ */
 class ItemsList extends Component {
   state = {
     items: null,
     title: 'Latest Items',
   }
+
   static propTypes = {
     displayCategory: PropTypes.bool.isRequired,
     categoryId: PropTypes.number,
   }
+
   static defaultProps = {
     displayCategory: true,
   }
-  handleItemsFetching = (categoryId, called) => {
-    console.log('Who called', called)
+
+  /*
+   * Triggers the items list fetching for a specific category
+   */
+  handleItemsFetching = categoryId => {
     return fetchCategoryItems(categoryId).then(resp => {
-      console.log('Function', resp)
       this.setState({
         items: resp.Items,
         title: resp.Category.category_name + ' Items',
       })
     })
   }
-  componentDidUpdate() {
-    this.handleItemsFetching(this.props.categoryId, 'didUpdate')
-  }
+
   componentDidMount() {
+    /*
+     * If category is provided in props, then the component should
+     * render this category's items. Otherwiser, renders the latest
+     * created items.
+     */
     if (this.props.categoryId) {
-      this.handleItemsFetching(this.props.categoryId, 'didMount')
+      this.handleItemsFetching(this.props.categoryId)
     } else {
       fetchLatestItems().then(resp => {
         this.setState({
@@ -50,15 +66,27 @@ class ItemsList extends Component {
       })
     }
   }
-  shouldComponentUpdate(nextProps, nextState) {
-    console.log('Should update categoryID', this.props.categoryId)
-    console.log('Should update next', nextProps.categoryId)
-    if (this.props.categoryId !== nextProps.categoryId) {
-      return true
-    }
 
-    return false
+  componentDidUpdate(prevProps, prevState) {
+    /*
+     * Listen to the category ID change. If true, then evaluates
+     * if the category was given, if so then fetch the given
+     * category items. Otherwise, fetch the latest items.
+     */
+    if (prevProps.categoryId !== this.props.categoryId) {
+      if (this.props.categoryId) {
+        this.handleItemsFetching(this.props.categoryId)
+      } else {
+        fetchLatestItems().then(resp => {
+          this.setState({
+            items: resp.Items,
+            title: 'Latest Items',
+          })
+        })
+      }
+    }
   }
+
   render() {
     return (
       <div className={listContainer}>
@@ -69,6 +97,8 @@ class ItemsList extends Component {
               <li key={obj.id}>
                 <Link to={'/items/' + obj.id}>
                   {obj.name}
+                  {/* If listing the latest items,
+                    * then display the category name. */}
                   {this.props.displayCategory ? (
                     <ItemCategory name={obj.category_name} />
                   ) : null}
