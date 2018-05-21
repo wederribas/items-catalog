@@ -55,12 +55,17 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                        nullable=False)
+    user = db.relationship('User',
+                           backref=db.backref('category', lazy=True))
 
     @property
     def serialize(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'user_id': self.user_id
         }
 
 
@@ -77,6 +82,10 @@ class Item(db.Model):
                             nullable=False)
     category = db.relationship('Category',
                                backref=db.backref('items', lazy=True))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                        nullable=False)
+    user = db.relationship('User',
+                           backref=db.backref('items', lazy=True))
 
     @property
     def serialize(self):
@@ -86,5 +95,6 @@ class Item(db.Model):
             'description': self.description,
             'image_url': self.image_url,
             'creation_timestamp': self.creation_timestamp,
-            'category_id': self.category_id
+            'category_id': self.category_id,
+            'user_id': self.user_id
         }
