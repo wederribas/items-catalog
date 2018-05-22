@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
 import {Navigation} from 'components'
 import {withRouter} from 'react-router-dom'
 import {container, innerContainer} from './styles.css'
 import {firebaseAuth} from 'config/constants'
 import auth, {logout, registerUser} from 'helpers/auth'
+import {AuthedUserContext} from 'context/authedUserContext'
 
 class MainContainer extends Component {
   state = {
@@ -49,7 +49,9 @@ class MainContainer extends Component {
           userInfo={this.state.user}
           onLogout={this.handleLogout}
         />
-        <div className={innerContainer}>{this.props.children}</div>
+        <AuthedUserContext.Provider value={this.state.isAuthed}>
+          <div className={innerContainer}>{this.props.children}</div>
+        </AuthedUserContext.Provider>
       </div>
     )
   }

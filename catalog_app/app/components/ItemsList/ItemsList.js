@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 import {Title} from 'components'
 import {fetchLatestItems, fetchCategoryItems} from 'helpers/api'
-import {list, listContainer} from '../../assets/styles/styles.css'
+import {list, listContainer, formLink} from '../../assets/styles/styles.css'
 import {categoryLabel} from './styles.css'
+import {AuthedUserContext} from 'context/authedUserContext'
 
 /*
  * Renders the item category name
@@ -90,6 +91,15 @@ class ItemsList extends Component {
   render() {
     return (
       <div className={listContainer}>
+        <AuthedUserContext.Consumer>
+          {isAuthed =>
+            isAuthed ? (
+              <Link to={'/add-item'} className={formLink}>
+                Add Item
+              </Link>
+            ) : null
+          }
+        </AuthedUserContext.Consumer>
         <Title text={this.state.title} />
         {this.state.items ? (
           <ul className={list}>

@@ -59,7 +59,7 @@ const baseConfig = {
       sharedStyles: path.resolve('./app/sharedStyles'),
       helpers: path.resolve('./app/helpers'),
       config: path.resolve('./app/config'),
-      reduxConfig: path.resolve('./app/reduxConfig'),
+      context: path.resolve('./app/context'),
     },
   },
 }
