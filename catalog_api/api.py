@@ -28,7 +28,7 @@ def list_catalog():
 
 @app.route('/categories', methods=['GET'])
 def list_all_categories():
-    categories = Category.query.all()
+    categories = Category.query.order_by(Category.name).all()
     return make_response(
         jsonify(Categories=[c.serialize for c in categories])
     ), 200
