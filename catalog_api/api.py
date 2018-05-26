@@ -4,6 +4,7 @@ from flask import make_response, jsonify, request
 from sqlalchemy import desc
 from __init__ import app, db
 from database_setup import User, Category, Item
+from utils import get_userid_from_header
 
 
 db.create_all(app=app)
@@ -159,11 +160,24 @@ def list_item(item_id):
 
 @app.route('/items', methods=['POST'])
 def add_item():
+    request_json = request.get_json()
+
+    auth_header = request.headers.get('Authorization')
+
+    try:
+        user_id = get_userid_from_header(auth_header)
+    except Exception as e:
+        return make_response(jsonify({
+            'status': e.status,
+            'message': e.message
+        })), 401
+
     new_item = Item(
-        name=request.form['name'].strip(),
-        description=request.form['description'].strip(),
-        image_url=request.form['image_url'].strip(),
-        category_id=request.form['category_id'].strip()
+        name=request_json.get('name').strip(),
+        description=request_json.get('description').strip(),
+        image_url='https://default.png',
+        category_id=request_json.get('category').strip(),
+        user_id=user_id
     )
     db.session.add(new_item)
     db.session.commit()
