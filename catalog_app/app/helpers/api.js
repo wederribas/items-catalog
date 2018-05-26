@@ -3,9 +3,6 @@ const apiUrl = 'http://127.0.0.1:8000/'
 export function fetchCategories() {
   const url = apiUrl + 'categories'
   return fetch(url, {
-    headers: {
-      Authorization: `Bearer ${window.localStorage.authToken}`,
-    },
     method: 'GET',
     mode: 'cors',
     redirect: 'follow',
@@ -37,6 +34,21 @@ export function fetchCategoryItems(category_id) {
   const url = apiUrl + `categories/${category_id}/items`
   return fetch(url, {
     method: 'GET',
+    mode: 'cors',
+    redirect: 'follow',
+    referrer: 'no-referer',
+  }).then(resp => resp.json())
+}
+
+export function addItem(data) {
+  const url = apiUrl + 'items'
+  return fetch(url, {
+    body: JSON.stringify(data),
+    headers: {
+      'content-type': 'application/json',
+      Authorization: window.localStorage.authToken,
+    },
+    method: 'POST',
     mode: 'cors',
     redirect: 'follow',
     referrer: 'no-referer',

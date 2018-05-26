@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
+import {Redirect} from 'react-router-dom'
 import {Title} from 'components'
-import {fetchCategories} from 'helpers/api'
+import {fetchCategories, addItem} from 'helpers/api'
 import {formContainer} from './styles.css'
+import {AuthedUserContext} from 'context/authedUserContext'
 
 class AddItemForm extends Component {
   state = {
@@ -10,15 +12,18 @@ class AddItemForm extends Component {
     category: '',
     allCategories: null,
     isFetchingCategories: true,
+    redirect: false,
   }
 
   componentDidMount() {
-    fetchCategories().then(resp => {
-      this.setState({
-        allCategories: resp.Categories,
-        isFetchingCategories: false,
+    if (this.props.isAuthed) {
+      fetchCategories().then(resp => {
+        this.setState({
+          allCategories: resp.Categories,
+          isFetchingCategories: false,
+        })
       })
-    })
+    }
   }
 
   handleInputChange = event => {
@@ -30,14 +35,32 @@ class AddItemForm extends Component {
     })
   }
 
+  handleFormSubmit = event => {
+    event.preventDefault()
+
+    const {name, description, category} = this.state
+
+    addItem({name, description, category}).then(resp => {
+      if (resp.status === 'success') {
+        this.setState({
+          redirect: true,
+        })
+      }
+    })
+  }
+
   render() {
+    if (this.state.redirect || !this.props.isAuthed) {
+      return <Redirect to="/" />
+    }
+
     return (
       <div className={formContainer}>
         <Title text={'Edit Item'} />
         {this.state.isFetchingCategories ? (
           <span>Loading...</span>
         ) : (
-          <form>
+          <form onSubmit={this.handleFormSubmit}>
             <p>
               <label>
                 Name
@@ -48,6 +71,7 @@ class AddItemForm extends Component {
                   maxLength={100}
                   value={this.state.name}
                   onChange={this.handleInputChange}
+                  required
                 />
               </label>
             </p>
@@ -61,6 +85,7 @@ class AddItemForm extends Component {
                   name="description"
                   value={this.state.description}
                   onChange={this.handleInputChange}
+                  required
                 />
               </label>
             </p>
@@ -72,7 +97,9 @@ class AddItemForm extends Component {
                   name="category"
                   value={this.state.category}
                   onChange={this.handleInputChange}
+                  required
                 >
+                  <option value="" disabled />
                   {this.state.allCategories.map(category => (
                     <option key={category.id} value={category.id}>
                       {category.name}
@@ -89,4 +116,8 @@ class AddItemForm extends Component {
   }
 }
 
-export default AddItemForm
+export default props => (
+  <AuthedUserContext.Consumer>
+    {isAuthed => <AddItemForm isAuthed={isAuthed} />}
+  </AuthedUserContext.Consumer>
+)
