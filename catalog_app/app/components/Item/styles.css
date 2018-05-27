@@ -1,3 +1,7 @@
 .description {
   line-height: 1.5;
 }
+
+.actionButtons {
+  margin: 0 0 16px 0;
+}
