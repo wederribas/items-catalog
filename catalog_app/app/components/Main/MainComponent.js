@@ -24,6 +24,10 @@ class MainContainer extends Component {
   }
   handleLogout = event => {
     event.preventDefault()
+
+    // Remove auth token from browser storage
+    window.localStorage.clear()
+
     this.setState({
       isAuthed: false,
       user: null,
