@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {Redirect} from 'react-router-dom'
 import {Title} from 'components'
 import {fetchCategories, addItem} from 'helpers/api'
@@ -13,6 +14,10 @@ class AddItemForm extends Component {
     allCategories: null,
     isFetchingCategories: true,
     redirect: false,
+  }
+
+  static propTypes = {
+    isAuthed: PropTypes.bool.isRequired,
   }
 
   componentDidMount() {
