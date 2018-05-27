@@ -155,7 +155,22 @@ def list_item(item_id):
             'message': 'Item not found'
         })), 404
 
-    return make_response(jsonify(item.serialize)), 200
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(' ')[0]
+    else:
+        auth_token = ''
+
+    if auth_token:
+        user_id = User.decode_auth_token(auth_token)
+
+    if (user_id == item.user_id):
+        is_user_owner = True
+    else:
+        is_user_owner = False
+
+    return make_response(jsonify(
+        {**item.serialize, 'is_user_owner': is_user_owner})), 200
 
 
 @app.route('/items', methods=['POST'])
@@ -216,6 +231,16 @@ def edit_item(item_id):
 
 @app.route('/items/<int:item_id>', methods=['DELETE'])
 def delete_item(item_id):
+    auth_header = request.headers.get('Authorization')
+
+    try:
+        user_id = get_userid_from_header(auth_header)
+    except Exception as e:
+        return make_response(jsonify({
+            'status': e.status,
+            'message': e.message
+        })), 401
+
     item = Item.query.filter_by(id=item_id).first()
 
     if item is None:
@@ -223,6 +248,12 @@ def delete_item(item_id):
             'status': 'error',
             'message': 'Item not found'
         })), 404
+
+    if (user_id != item.user_id):
+        return make_response(jsonify({
+            'status': 'error',
+            'message': 'You are not authorized to perform this action'
+        })), 401
 
     db.session.delete(item)
     db.session.commit()

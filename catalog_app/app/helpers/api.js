@@ -23,6 +23,9 @@ export function fetchLatestItems() {
 export function fetchItem(id) {
   const url = apiUrl + `items/${id}`
   return fetch(url, {
+    headers: {
+      Authorization: window.localStorage.authToken,
+    },
     method: 'GET',
     mode: 'cors',
     redirect: 'follow',
@@ -49,6 +52,19 @@ export function addItem(data) {
       Authorization: window.localStorage.authToken,
     },
     method: 'POST',
+    mode: 'cors',
+    redirect: 'follow',
+    referrer: 'no-referer',
+  }).then(resp => resp.json())
+}
+
+export function deleteItem(itemId) {
+  const url = apiUrl + 'items/' + itemId
+  return fetch(url, {
+    headers: {
+      Authorization: window.localStorage.authToken,
+    },
+    method: 'DELETE',
     mode: 'cors',
     redirect: 'follow',
     referrer: 'no-referer',
