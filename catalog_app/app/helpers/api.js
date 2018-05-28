@@ -58,6 +58,21 @@ export function addItem(data) {
   }).then(resp => resp.json())
 }
 
+export function editItem(data) {
+  const url = apiUrl + 'items/' + data.id
+  return fetch(url, {
+    body: JSON.stringify(data),
+    headers: {
+      'content-type': 'application/json',
+      Authorization: window.localStorage.authToken,
+    },
+    method: 'PUT',
+    mode: 'cors',
+    redirect: 'follow',
+    referrer: 'no-referer',
+  }).then(resp => resp.json())
+}
+
 export function deleteItem(itemId) {
   const url = apiUrl + 'items/' + itemId
   return fetch(url, {

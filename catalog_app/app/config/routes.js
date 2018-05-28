@@ -4,7 +4,7 @@ import {
   MainComponent,
   Item,
   CategoryItems,
-  AddItemForm,
+  ItemForm,
   DeletionConfirmation,
 } from 'components'
 
@@ -16,12 +16,13 @@ export default function getRoutes() {
           <Route exact path="/" component={CategoryItems} />
           <Route exact path="/items/:id(\d+)" component={Item} />
           <Route exact path="/categories/:id(\d+)" component={CategoryItems} />
-          <Route exact path="/add-item" component={AddItemForm} />
+          <Route exact path="/add-item" component={ItemForm} />
           <Route
             exact
             path="/delete/:id(\d+)"
             component={DeletionConfirmation}
           />
+          <Route exact path="/edit/:id(\d+)" component={ItemForm} />
         </Switch>
       </MainComponent>
     </Router>

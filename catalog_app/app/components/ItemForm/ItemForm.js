@@ -2,17 +2,18 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {Redirect} from 'react-router-dom'
 import {Title} from 'components'
-import {fetchCategories, addItem} from 'helpers/api'
+import {fetchCategories, fetchItem, addItem, editItem} from 'helpers/api'
 import {formContainer} from './styles.css'
 import {AuthedUserContext} from 'context/authedUserContext'
 
-class AddItemForm extends Component {
+class ItemForm extends Component {
   state = {
+    id: undefined,
     name: '',
     description: '',
     category: '',
     allCategories: null,
-    isFetchingCategories: true,
+    isFetching: true,
     redirect: false,
   }
 
@@ -22,10 +23,22 @@ class AddItemForm extends Component {
 
   componentDidMount() {
     if (this.props.isAuthed) {
+      if (this.props.location.pathname.indexOf('edit') > -1) {
+        fetchItem(this.props.match.params.id).then(resp => {
+          this.setState({
+            id: resp.id,
+            name: resp.name,
+            description: resp.description,
+            category: resp.category_id,
+            redirect: !resp.is_user_owner,
+          })
+        })
+      }
+
       fetchCategories().then(resp => {
         this.setState({
           allCategories: resp.Categories,
-          isFetchingCategories: false,
+          isFetching: false,
         })
       })
     }
@@ -43,15 +56,21 @@ class AddItemForm extends Component {
   handleFormSubmit = event => {
     event.preventDefault()
 
-    const {name, description, category} = this.state
+    const {id, name, description, category} = this.state
 
-    addItem({name, description, category}).then(resp => {
+    const callback = resp => {
       if (resp.status === 'success') {
         this.setState({
           redirect: true,
         })
       }
-    })
+    }
+
+    if (this.props.location.pathname.indexOf('edit') > -1) {
+      editItem({id, name, description, category}).then(resp => callback(resp))
+    } else {
+      addItem({name, description, category}).then(resp => callback(resp))
+    }
   }
 
   render() {
@@ -62,7 +81,7 @@ class AddItemForm extends Component {
     return (
       <div className={formContainer}>
         <Title text={'Edit Item'} />
-        {this.state.isFetchingCategories ? (
+        {this.state.isFetching ? (
           <span>Loading...</span>
         ) : (
           <form onSubmit={this.handleFormSubmit}>
@@ -123,6 +142,6 @@ class AddItemForm extends Component {
 
 export default props => (
   <AuthedUserContext.Consumer>
-    {isAuthed => <AddItemForm isAuthed={isAuthed} />}
+    {isAuthed => <ItemForm {...props} isAuthed={isAuthed} />}
   </AuthedUserContext.Consumer>
 )

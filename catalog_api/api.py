@@ -205,6 +205,18 @@ def add_item():
 
 @app.route('/items/<int:item_id>', methods=['PUT'])
 def edit_item(item_id):
+    request_json = request.get_json()
+
+    auth_header = request.headers.get('Authorization')
+
+    try:
+        user_id = get_userid_from_header(auth_header)
+    except Exception as e:
+        return make_response(jsonify({
+            'status': e.status,
+            'message': e.message
+        })), 400
+
     item = Item.query.filter_by(id=item_id).first()
 
     if item is None:
@@ -213,20 +225,25 @@ def edit_item(item_id):
             'message': 'Item not found'
         })), 404
 
-    if request.form.get('name'):
-        item.name = request.form['name'].strip()
-    if request.form.get('description'):
-        item.description = request.form['description'].strip()
-    if request.form.get('image_url'):
-        item.image_url = request.form['image_url'].strip()
-    if request.form.get('category_id'):
-        item.category_id = request.form['category_id'].strip()
-    db.session.commit()
+    if (user_id == item.user_id):
+        if request_json.get('name'):
+            item.name = request_json.get('name').strip()
+        if request_json.get('description'):
+            item.description = request_json.get('description').strip()
+        if request_json.get('category'):
+            item.category_id = request_json.get('category')
 
-    return make_response(jsonify({
-        'status': 'success',
-        'message': 'Item has benn successfully updated'
-    })), 200
+        db.session.commit()
+
+        return make_response(jsonify({
+            'status': 'success',
+            'message': 'Item has benn successfully updated'
+        })), 200
+    else:
+        return make_response(jsonify({
+            'status': 'error',
+            'message': 'You are not allowed to edit this item'
+        })), 400
 
 
 @app.route('/items/<int:item_id>', methods=['DELETE'])
