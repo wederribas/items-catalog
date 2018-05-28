@@ -35,4 +35,4 @@ app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 db = SQLAlchemy()
 db.init_app(app)
 
-CORS(app)
+CORS(app, origins="http://127.0.0.1:8080")
