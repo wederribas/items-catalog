@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {Redirect} from 'react-router-dom'
-import {Title} from 'components'
+import {Title, Loading} from 'components'
 import {fetchCategories, fetchItem, addItem, editItem} from 'helpers/api'
 import {formContainer} from './styles.css'
 import {AuthedUserContext} from 'context/authedUserContext'
@@ -13,6 +13,7 @@ class ItemForm extends Component {
     description: '',
     category: '',
     allCategories: null,
+    categoriesFound: 0,
     isFetching: true,
     redirect: false,
   }
@@ -39,6 +40,7 @@ class ItemForm extends Component {
         this.setState({
           allCategories: resp.Categories,
           isFetching: false,
+          categoriesFound: resp.Categories.length,
         })
       })
     }
@@ -74,7 +76,11 @@ class ItemForm extends Component {
   }
 
   render() {
-    if (this.state.redirect || !this.props.isAuthed) {
+    if (
+      this.state.redirect ||
+      !this.props.isAuthed ||
+      !this.state.categoriesFound
+    ) {
       return <Redirect to="/" />
     }
 
@@ -82,7 +88,7 @@ class ItemForm extends Component {
       <div className={formContainer}>
         <Title text={'Edit Item'} />
         {this.state.isFetching ? (
-          <span>Loading...</span>
+          <Loading />
         ) : (
           <form onSubmit={this.handleFormSubmit}>
             <p>

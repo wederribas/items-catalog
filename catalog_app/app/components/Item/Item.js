@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
-import {Title} from 'components'
+import {Title, Loading} from 'components'
 import {fetchItem} from 'helpers/api'
 import {description, actionButtons} from './styles.css'
 import {listContainer, formLink} from '../../assets/styles/styles.css'
@@ -60,7 +60,7 @@ class Item extends Component {
             ) : null}
           </section>
         ) : (
-          <span>{'Loading'}</span>
+          <Loading />
         )}
       </div>
     )

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
-import {Title} from 'components'
+import {Title, Loading} from 'components'
 import {fetchLatestItems, fetchCategoryItems} from 'helpers/api'
 import {list, listContainer, formLink} from '../../assets/styles/styles.css'
 import {categoryLabel} from './styles.css'
@@ -28,6 +28,7 @@ class ItemsList extends Component {
   state = {
     items: null,
     title: 'Latest Items',
+    isFetching: true,
   }
 
   static propTypes = {
@@ -47,6 +48,7 @@ class ItemsList extends Component {
       this.setState({
         items: resp.Items,
         title: resp.Category.category_name + ' Items',
+        isFetching: false,
       })
     })
   }
@@ -63,6 +65,7 @@ class ItemsList extends Component {
       fetchLatestItems().then(resp => {
         this.setState({
           items: resp.Items,
+          isFetching: false,
         })
       })
     }
@@ -101,7 +104,9 @@ class ItemsList extends Component {
           }
         </AuthedUserContext.Consumer>
         <Title text={this.state.title} />
-        {this.state.items ? (
+        {this.state.isFetching ? (
+          <Loading />
+        ) : this.state.items.lenght ? (
           <ul className={list}>
             {this.state.items.map(obj => (
               <li key={obj.id}>
@@ -117,7 +122,7 @@ class ItemsList extends Component {
             ))}
           </ul>
         ) : (
-          <span>{'Loading'}</span>
+          <span>{'No items found'}</span>
         )}
       </div>
     )
