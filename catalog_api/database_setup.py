@@ -75,7 +75,6 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
-    image_url = db.Column(db.Text, nullable=False)
     creation_timestamp = db.Column(
         db.DateTime, default=datetime.datetime.utcnow())
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'),
@@ -93,7 +92,6 @@ class Item(db.Model):
             'id': self.id,
             'name': self.name,
             'description': self.description,
-            'image_url': self.image_url,
             'creation_timestamp': self.creation_timestamp,
             'category_id': self.category_id,
             'user_id': self.user_id

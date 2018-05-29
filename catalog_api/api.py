@@ -190,7 +190,6 @@ def add_item():
     new_item = Item(
         name=request_json.get('name').strip(),
         description=request_json.get('description').strip(),
-        image_url='https://default.png',
         category_id=request_json.get('category').strip(),
         user_id=user_id
     )
