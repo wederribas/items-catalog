@@ -33,3 +33,7 @@
   color: #ff5200;
   text-decoration: none;
 }
+
+.formContainer {
+  margin: 10px 0 20px 20px;
+}
