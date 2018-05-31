@@ -85,3 +85,18 @@ export function deleteItem(itemId) {
     referrer: 'no-referer',
   }).then(resp => resp.json())
 }
+
+export function addCategory(data) {
+  const url = apiUrl + 'categories'
+  return fetch(url, {
+    body: JSON.stringify(data),
+    headers: {
+      'content-type': 'application/json',
+      Authorization: window.localStorage.authToken,
+    },
+    method: 'POST',
+    mode: 'cors',
+    redirect: 'follow',
+    referrer: 'no-referer',
+  }).then(resp => resp.json())
+}

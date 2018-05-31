@@ -6,6 +6,7 @@ import {
   CategoryItems,
   ItemForm,
   DeletionConfirmation,
+  CategoryForm,
 } from 'components'
 
 export default function getRoutes() {
@@ -23,6 +24,7 @@ export default function getRoutes() {
             component={DeletionConfirmation}
           />
           <Route exact path="/edit/:id(\d+)" component={ItemForm} />
+          <Route exact path="/add-category" component={CategoryForm} />
         </Switch>
       </MainComponent>
     </Router>

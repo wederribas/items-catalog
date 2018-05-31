@@ -2,7 +2,13 @@ import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import {Title, Loading} from 'components'
 import {fetchCategories} from 'helpers/api'
-import {listContainer, listWrapper, list} from '../../assets/styles/styles.css'
+import {
+  listContainer,
+  listWrapper,
+  list,
+  formLink,
+} from '../../assets/styles/styles.css'
+import {AuthedUserContext} from 'context/authedUserContext'
 
 class CategoryList extends Component {
   state = {
@@ -20,6 +26,15 @@ class CategoryList extends Component {
   render() {
     return (
       <div className={listContainer}>
+        <AuthedUserContext.Consumer>
+          {isAuthed =>
+            isAuthed ? (
+              <Link to={'/add-category'} className={formLink}>
+                Add Category
+              </Link>
+            ) : null
+          }
+        </AuthedUserContext.Consumer>
         <Title text={'Categories'} />
         <div className={listWrapper}>
           {this.state.isFetching ? (

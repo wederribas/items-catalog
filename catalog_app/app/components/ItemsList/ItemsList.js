@@ -106,7 +106,7 @@ class ItemsList extends Component {
         <Title text={this.state.title} />
         {this.state.isFetching ? (
           <Loading />
-        ) : this.state.items.lenght ? (
+        ) : this.state.items.length ? (
           <ul className={list}>
             {this.state.items.map(obj => (
               <li key={obj.id}>
