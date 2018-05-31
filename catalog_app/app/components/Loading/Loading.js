@@ -15,8 +15,8 @@ class Loading extends Component {
     }, 300)
   }
 
-  componentWillUmount() {
-    window.cleatInterval(this.interval)
+  componentWillUnmount() {
+    window.clearInterval(this.interval)
   }
 
   render() {
