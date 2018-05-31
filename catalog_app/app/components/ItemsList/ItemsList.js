@@ -95,7 +95,7 @@ class ItemsList extends Component {
     return (
       <div className={listContainer}>
         <AuthedUserContext.Consumer>
-          {isAuthed =>
+          {({isAuthed}) =>
             isAuthed ? (
               <Link to={'/add-item'} className={formLink}>
                 Add Item

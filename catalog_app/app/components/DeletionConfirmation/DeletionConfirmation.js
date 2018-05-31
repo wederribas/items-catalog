@@ -15,6 +15,7 @@ class DeletionConfirmation extends Component {
 
   static propTypes = {
     isAuthed: PropTypes.bool.isRequired,
+    unAuthUser: PropTypes.func.isRequired,
   }
 
   componentDidMount() {
@@ -28,7 +29,9 @@ class DeletionConfirmation extends Component {
 
   handleSubmit = () => {
     deleteItem(this.state.item.id).then(resp => {
-      if (resp.status == 'success') {
+      if (resp.status === 'error') {
+        this.props.unAuthUser()
+      } else {
         this.setState({
           redirect: true,
         })
@@ -62,6 +65,12 @@ class DeletionConfirmation extends Component {
 
 export default props => (
   <AuthedUserContext.Consumer>
-    {isAuthed => <DeletionConfirmation {...props} isAuthed={isAuthed} />}
+    {({isAuthed, unAuthUser}) => (
+      <DeletionConfirmation
+        {...props}
+        isAuthed={isAuthed}
+        unAuthUser={unAuthUser}
+      />
+    )}
   </AuthedUserContext.Consumer>
 )

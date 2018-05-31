@@ -14,6 +14,7 @@ class CategoryForm extends Component {
 
   static propTypes = {
     isAuthed: PropTypes.bool.isRequired,
+    unAuthUser: PropTypes.func.isRequired,
   }
 
   handleInputChange = event => {
@@ -31,7 +32,9 @@ class CategoryForm extends Component {
     const {name} = this.state
 
     addCategory({name}).then(resp => {
-      if (resp.status === 'success') {
+      if (resp.status === 'error') {
+        this.props.unAuthUser()
+      } else {
         this.setState({
           redirect: true,
         })
@@ -75,6 +78,8 @@ class CategoryForm extends Component {
 
 export default props => (
   <AuthedUserContext.Consumer>
-    {isAuthed => <CategoryForm {...props} isAuthed={isAuthed} />}
+    {({isAuthed, unAuthUser}) => (
+      <CategoryForm {...props} isAuthed={isAuthed} unAuthUser={unAuthUser} />
+    )}
   </AuthedUserContext.Consumer>
 )

@@ -66,6 +66,6 @@ class Item extends Component {
 
 export default props => (
   <AuthedUserContext.Consumer>
-    {isAuthed => <Item {...props} isAuthed={isAuthed} />}
+    {({isAuthed}) => <Item {...props} isAuthed={isAuthed} />}
   </AuthedUserContext.Consumer>
 )

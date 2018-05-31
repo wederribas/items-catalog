@@ -7,10 +7,16 @@ import auth, {logout, registerUser} from 'helpers/auth'
 import {AuthedUserContext} from 'context/authedUserContext'
 
 class MainContainer extends Component {
-  state = {
-    isAuthed: false,
-    user: null,
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      user: null,
+      isAuthed: false,
+      unAuthUser: this.unAuthUser,
+    }
   }
+
   handleAuth = () => {
     return auth().then(({user, credential}) => {
       registerUser(user).then(response => {
@@ -22,9 +28,8 @@ class MainContainer extends Component {
       })
     })
   }
-  handleLogout = event => {
-    event.preventDefault()
 
+  unAuthUser = () => {
     // Remove auth token from browser storage
     window.localStorage.clear()
 
@@ -32,8 +37,15 @@ class MainContainer extends Component {
       isAuthed: false,
       user: null,
     })
+
     return logout()
   }
+
+  handleLogout = event => {
+    event.preventDefault()
+    return this.unAuthUser()
+  }
+
   componentDidMount() {
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
@@ -44,6 +56,7 @@ class MainContainer extends Component {
       }
     })
   }
+
   render() {
     return (
       <div className={container}>
@@ -53,7 +66,7 @@ class MainContainer extends Component {
           userInfo={this.state.user}
           onLogout={this.handleLogout}
         />
-        <AuthedUserContext.Provider value={this.state.isAuthed}>
+        <AuthedUserContext.Provider value={this.state}>
           <div className={innerContainer}>{this.props.children}</div>
         </AuthedUserContext.Provider>
       </div>
