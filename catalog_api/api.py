@@ -50,7 +50,19 @@ def list_category(category_id):
 
 @app.route('/categories', methods=['POST'])
 def add_category():
-    new_category = Category(name=request.form['name'].strip())
+    request_json = request.get_json()
+
+    auth_header = request.headers.get('Authorization')
+
+    try:
+        user_id = get_userid_from_header(auth_header)
+    except Exception as e:
+        return make_response(jsonify({
+            'status': e.status,
+            'message': e.message
+        })), 400
+
+    new_category = Category(name=request_json.get('name').strip())
     db.session.add(new_category)
     db.session.commit()
 
@@ -58,45 +70,6 @@ def add_category():
         'status': 'success',
         'message': 'Category has been successfully added'
     })), 201
-
-
-@app.route('/categories/<int:category_id>', methods=['PUT'])
-def edit_category(category_id):
-    category = Category.query.filter_by(id=category_id).first()
-
-    if category is None:
-        return make_response(jsonify({
-            'status': 'error',
-            'message': 'Category not found'
-        })), 404
-
-    if request.form.get('name'):
-        category.name = request.form['name'].strip()
-    db.session.commit()
-
-    return make_response(jsonify({
-        'status': 'success',
-        'message': 'Category has been successfully updated'
-    })), 200
-
-
-@app.route('/categories/<int:category_id>', methods=['DELETE'])
-def delete_category(category_id):
-    category = Category.query.filter_by(id=category_id).first()
-
-    if category is None:
-        return make_reponse(jsonify({
-            'status': 'error',
-            'message': 'Category not found'
-        })), 404
-
-    db.session.delete(category)
-    db.session.commit()
-
-    return make_response(jsonify({
-        'status': 'success',
-        'message': 'Category has been successfully deleted'
-    })), 200
 
 
 @app.route('/categories/<int:category_id>/items', methods=['GET'])
