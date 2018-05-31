@@ -52,6 +52,8 @@ $ docker-compose up -d --build;
 $ ./compose-up.sh
 ```
 
+**ATTENTION:** The application build could take a while to be ready after running the compose command. It may take some minutes to the Web App or the API to be accessible. Keep reloading until ready ;-).
+
 If you want to build the React app into your own computer (for testing, or to debug something in Webpack) you will need to remove the webapp from the docker-compose build, and follow the steps below to get the web app running locally:
 
 ```
@@ -87,6 +89,8 @@ After the building phase, the containers must be running and you'll be able to a
 * API: http://127.0.0.1:8000 (or your defined DNS)
 
 Hint: use the command `docker ps` to check if the containers are running.
+
+**ATTENTION:** The application build could take a while to be ready. It may take some minutes to the Web App or the API to be accessible. Keep reloading until ready ;-).
 
 ## Authors
 
