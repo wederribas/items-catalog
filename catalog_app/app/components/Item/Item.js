@@ -27,9 +27,6 @@ class Item extends Component {
   }
 
   render() {
-    const displayActionButtons =
-      this.state.isUserActionAllowed && this.props.isAuthed
-
     return (
       <div className={listContainer}>
         {this.state.item ? (
@@ -39,7 +36,7 @@ class Item extends Component {
               <b>{'Description: '}</b>
               {this.state.item.description}
             </p>
-            {displayActionButtons ? (
+            {this.state.isUserActionAllowed && this.props.isAuthed ? (
               <div className={actionButtons}>
                 <Link
                   className={formLink}
