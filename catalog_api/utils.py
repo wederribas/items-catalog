@@ -24,9 +24,9 @@ def get_userid_from_header(header):
         resp = User.decode_auth_token(auth_token)
 
         if isinstance(resp, str):
-            raise CustomValueError('invalid_token', resp)
+            raise CustomValueError('error', resp)
 
         return resp
     else:
         raise CustomValueError(
-            'expired_token', 'The auth token provided is not valid')
+            'error', 'The auth token provided is not valid')
