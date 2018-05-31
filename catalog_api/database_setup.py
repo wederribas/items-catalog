@@ -54,18 +54,13 @@ class Category(db.Model):
     __tablename__ = 'category'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
-                        nullable=False)
-    user = db.relationship('User',
-                           backref=db.backref('category', lazy=True))
+    name = db.Column(db.String(20), nullable=False)
 
     @property
     def serialize(self):
         return {
             'id': self.id,
-            'name': self.name,
-            'user_id': self.user_id
+            'name': self.name
         }
 
 
@@ -73,7 +68,7 @@ class Item(db.Model):
     __tablename__ = 'item'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
     creation_timestamp = db.Column(
         db.DateTime, default=datetime.datetime.utcnow())
