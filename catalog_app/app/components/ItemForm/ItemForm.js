@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {Redirect} from 'react-router-dom'
 import {Title, Loading} from 'components'
 import {fetchCategories, fetchItem, addItem, editItem} from 'helpers/api'
-import {formContainer} from './styles.css'
+import {formContainer} from '../../assets/styles/styles.css'
 import {AuthedUserContext} from 'context/authedUserContext'
 
 class ItemForm extends Component {
@@ -13,7 +13,6 @@ class ItemForm extends Component {
     description: '',
     category: '',
     allCategories: null,
-    categoriesFound: 0,
     isFetching: true,
     redirect: false,
   }
@@ -40,7 +39,6 @@ class ItemForm extends Component {
         this.setState({
           allCategories: resp.Categories,
           isFetching: false,
-          categoriesFound: resp.Categories.length,
         })
       })
     }
@@ -76,11 +74,7 @@ class ItemForm extends Component {
   }
 
   render() {
-    if (
-      this.state.redirect ||
-      !this.props.isAuthed ||
-      !this.state.categoriesFound
-    ) {
+    if (this.state.redirect || !this.props.isAuthed) {
       return <Redirect to="/" />
     }
 
@@ -98,7 +92,7 @@ class ItemForm extends Component {
                 <input
                   type="text"
                   name="name"
-                  maxLength={100}
+                  maxLength={50}
                   value={this.state.name}
                   onChange={this.handleInputChange}
                   required
