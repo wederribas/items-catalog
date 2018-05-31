@@ -12,6 +12,10 @@ db.create_all(app=app)
 
 @app.route('/catalog.json')
 def list_catalog():
+    """Return HTTP response
+
+    List all categories with its items as a JSON endpoint.
+    """
     categories = Category.query.order_by(Category.name).all()
     categories_dict = [c.serialize for c in categories]
     for category in range(len(categories_dict)):
@@ -29,6 +33,10 @@ def list_catalog():
 
 @app.route('/categories', methods=['GET'])
 def list_all_categories():
+    """Return HTTP response
+
+    List all categories from database.
+    """
     categories = Category.query.order_by(Category.name).all()
     return make_response(
         jsonify(Categories=[c.serialize for c in categories])
@@ -37,6 +45,10 @@ def list_all_categories():
 
 @app.route('/categories/<int:category_id>', methods=['GET'])
 def list_category(category_id):
+    """Return HTTP response
+
+    List a specific category that matches the given ID.
+    """
     category = Category.query.filter_by(id=category_id).first()
 
     if category is None:
@@ -50,6 +62,10 @@ def list_category(category_id):
 
 @app.route('/categories', methods=['POST'])
 def add_category():
+    """Return HTTP response
+
+    Add a new category into the database with the given form data.
+    """
     request_json = request.get_json()
 
     auth_header = request.headers.get('Authorization')
@@ -74,6 +90,10 @@ def add_category():
 
 @app.route('/categories/<int:category_id>/items', methods=['GET'])
 def list_category_items(category_id):
+    """Return HTTP response
+
+    List all items from a specific category.
+    """
     category = Category.query.filter_by(id=category_id).first()
 
     if category is None:
@@ -99,6 +119,10 @@ def list_category_items(category_id):
 
 @app.route('/items', methods=['GET'])
 def list_all_items():
+    """Return HTTP response
+
+    List all items from database with the related category name.
+    """
     items_limit = request.args.get('limit')
 
     if items_limit:
@@ -120,6 +144,10 @@ def list_all_items():
 
 @app.route('/items/<int:item_id>', methods=['GET'])
 def list_item(item_id):
+    """Return HTTP response
+
+    List a specific items that matches the given ID.
+    """
     item = Item.query.filter_by(id=item_id).first()
 
     if item is None:
@@ -148,6 +176,10 @@ def list_item(item_id):
 
 @app.route('/items', methods=['POST'])
 def add_item():
+    """Return HTTP response
+
+    Add a new item into the database with the given form data.
+    """
     request_json = request.get_json()
 
     auth_header = request.headers.get('Authorization')
@@ -177,6 +209,10 @@ def add_item():
 
 @app.route('/items/<int:item_id>', methods=['PUT'])
 def edit_item(item_id):
+    """Return HTTP response
+
+    Update an existent item data with the new data from form.
+    """
     request_json = request.get_json()
 
     auth_header = request.headers.get('Authorization')
@@ -220,6 +256,10 @@ def edit_item(item_id):
 
 @app.route('/items/<int:item_id>', methods=['DELETE'])
 def delete_item(item_id):
+    """Return HTTP response
+
+    Delete a specific item from database that matches the given ID.
+    """
     auth_header = request.headers.get('Authorization')
 
     try:
@@ -255,6 +295,16 @@ def delete_item(item_id):
 
 @app.route('/users', methods=['POST'])
 def register_user():
+    """Return HTTP response
+
+    Register an user into the database during the login process.
+
+    This function uses JWT (JSON Web Tokens) to ensure authenticity
+    in all subsequent API calls. For more information, see https://jwt.io/.
+
+    If the given user mail is already registered, then just create
+    a new JWT token. Otherwise, create the new user with a new token.
+    """
     request_json = request.get_json()
 
     user = User.query.filter_by(email=request_json.get('email')).first()

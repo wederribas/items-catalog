@@ -1,5 +1,6 @@
 import firebase from 'firebase'
 
+// Defines the firebase authentication config
 const config = {
   apiKey: 'AIzaSyDjVVHgh077_msL3pIQU3K_gI70yaz17iA',
   authDomain: 'udacity-items-catalog.firebaseapp.com',

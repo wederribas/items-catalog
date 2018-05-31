@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 
+// Loading component inspired in the Tyler McGinnis Loading component
+// https://gist.github.com/tylermcginnis/29f885fdb5d9d5206e6fedc9168134aa
 class Loading extends Component {
   state = {
     text: 'Loading',

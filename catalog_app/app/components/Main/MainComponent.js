@@ -7,6 +7,8 @@ import auth, {logout, registerUser} from 'helpers/auth'
 import {AuthedUserContext} from 'context/authedUserContext'
 
 class MainContainer extends Component {
+  // Using constructor in this component to allow the Context API to
+  // trigger functions in nested components.
   constructor(props) {
     super(props)
 
@@ -20,6 +22,7 @@ class MainContainer extends Component {
   handleAuth = () => {
     return auth().then(({user, credential}) => {
       registerUser(user).then(response => {
+        // Stores the given token in the browser storage
         window.localStorage.setItem('authToken', response.auth_token)
         this.setState({
           isAuthed: true,

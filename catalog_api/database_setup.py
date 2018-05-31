@@ -1,5 +1,9 @@
 # catalog-api/database_setup.py
 
+# The JWT authentication engine used in this application was inspired
+# in the Real Python blog post, accessible in the link below:
+# https://realpython.com/token-based-authentication-with-flask/
+
 import datetime
 
 import jwt

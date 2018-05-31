@@ -5,16 +5,20 @@ from database_setup import User
 
 
 class CustomValueError(ValueError):
+    """Defines a custom exception handler."""
+
     def __init__(self, status, message):
         self.status = status
         self.message = message
 
 
 def get_userid_from_header(header):
-    '''Validates if the given authorization header contains a valid
+    """Returns the user ID or the error exception
+
+    Validates if the given authorization header contains a valid
     user token. If so, decode the token returning the user_id. Otherwise,
-    retrieves an error response message.
-    '''
+    retrieves an error message.
+    """
     if header:
         auth_token = header.split(' ')[0]
     else:

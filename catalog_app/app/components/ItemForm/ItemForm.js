@@ -6,6 +6,10 @@ import {fetchCategories, fetchItem, addItem, editItem} from 'helpers/api'
 import {formContainer} from '../../assets/styles/styles.css'
 import {AuthedUserContext} from 'context/authedUserContext'
 
+/*
+ * This component is used for both Items addition and edition. It relies in
+ * the given URL to validate which action to take (addition or edition).
+ */
 class ItemForm extends Component {
   state = {
     id: undefined,
