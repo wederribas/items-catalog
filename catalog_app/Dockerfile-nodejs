@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:9.6.1
 
 # create work directory
 RUN mkdir /usr/src/catalog_app
