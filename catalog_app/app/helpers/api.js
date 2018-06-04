@@ -1,4 +1,4 @@
-const apiUrl = 'http://127.0.0.1:8000/'
+const apiUrl = `http://${window.location.hostname}:8000`
 
 const defaultParams = {
   mode: 'cors',
@@ -7,7 +7,7 @@ const defaultParams = {
 }
 
 export function fetchCategories() {
-  const url = apiUrl + 'categories'
+  const url = apiUrl + '/categories'
   return fetch(url, {
     method: 'GET',
     ...defaultParams,
@@ -15,7 +15,7 @@ export function fetchCategories() {
 }
 
 export function fetchLatestItems() {
-  const url = apiUrl + 'items?limit=8'
+  const url = apiUrl + '/items?limit=8'
   return fetch(url, {
     method: 'GET',
     ...defaultParams,
@@ -23,7 +23,7 @@ export function fetchLatestItems() {
 }
 
 export function fetchItem(id) {
-  const url = apiUrl + `items/${id}`
+  const url = apiUrl + `/items/${id}`
   return fetch(url, {
     headers: {
       Authorization: window.localStorage.authToken,
@@ -34,7 +34,7 @@ export function fetchItem(id) {
 }
 
 export function fetchCategoryItems(category_id) {
-  const url = apiUrl + `categories/${category_id}/items`
+  const url = apiUrl + `/categories/${category_id}/items`
   return fetch(url, {
     method: 'GET',
     ...defaultParams,
@@ -42,7 +42,7 @@ export function fetchCategoryItems(category_id) {
 }
 
 export function addItem(data) {
-  const url = apiUrl + 'items'
+  const url = apiUrl + '/items'
   return fetch(url, {
     body: JSON.stringify(data),
     headers: {
@@ -57,7 +57,7 @@ export function addItem(data) {
 }
 
 export function editItem(data) {
-  const url = apiUrl + 'items/' + data.id
+  const url = apiUrl + '/items/' + data.id
   return fetch(url, {
     body: JSON.stringify(data),
     headers: {
@@ -70,7 +70,7 @@ export function editItem(data) {
 }
 
 export function deleteItem(itemId) {
-  const url = apiUrl + 'items/' + itemId
+  const url = apiUrl + '/items/' + itemId
   return fetch(url, {
     headers: {
       Authorization: window.localStorage.authToken,
@@ -81,7 +81,7 @@ export function deleteItem(itemId) {
 }
 
 export function addCategory(data) {
-  const url = apiUrl + 'categories'
+  const url = apiUrl + '/categories'
   return fetch(url, {
     body: JSON.stringify(data),
     headers: {
